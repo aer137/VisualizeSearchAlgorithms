@@ -1,0 +1,99 @@
+.grid {
+    margin: 100px 0 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Lucida Console", "Courier New", monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    background: linear-gradient(
+            to right,
+            #090909,
+            #484748,
+            #675967,
+            #9f72a7,
+            #da9eea
+    );
+}
+
+.title {
+    animation-name: titleAnimation;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-delay: 0s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes titleAnimation {
+    0% {
+        color: rgb(151, 215, 234);
+        text-shadow: 0 1px 1px hotpink;
+    }
+    100% {
+        color: black;
+        text-shadow: 0 1px 1px white;
+    }
+}
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card {
+    transform-style: preserve-3d;
+    min-height: 60vh;
+    width: 60rem;
+    height: 30rem;
+    border-radius: 30px;
+    padding: 0rem 5rem;
+    box-shadow: 0 20px 20px rgb(2, 9, 5), 0px 0px 50px rgb(155, 98, 191);
+    background: linear-gradient(
+            to right,
+            #545454,
+            #c79dc4
+    );
+}
+
+
+.algo button{
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    font-family: "Lucida Console", "Courier New", monospace;
+    width: 20%;
+    background: #77702b;
+    border: none;
+    color: #f1eaf3;
+    cursor: pointer;
+    border-radius: 30px;
+    font-weight: bolder;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.reload button{
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    font-family: "Lucida Console", "Courier New", monospace;
+    width: 20%;
+    background: none;
+    border: none;
+    color: #c7ace2;
+    cursor: pointer;
+    border-radius: 30px;
+    font-weight: bolder;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}

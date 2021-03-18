@@ -1,0 +1,106 @@
+.node {
+    width: 25px;
+    height: 25px;
+    outline: 1px solid rgb(175, 216, 248);
+    display: inline-block;
+    background-color: transparent;
+}
+
+.node-finish {
+    background-color: #144fff;
+}
+
+.node-start {
+    background-color: #2eefd9;
+}
+.trans {
+    animation-name: transition;
+    animation-duration: .2s;
+    animation-timing-function: ease-out;
+    animation-delay: 0s;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes transition {
+    0% {
+        background-color: white;
+    }
+    50% {
+        background-color: #a813e7;
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.node-visited {
+    animation-name: visitedAnimation;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0s;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes visitedAnimation {
+    0% {
+        transform: scale(0.3);
+        background-color: rgb(69, 13, 172);
+        border-radius: 100%;
+    }
+    50% {
+        background-color: rgb(149, 48, 191)
+    }
+    75% {
+        transform: scale(1.2);
+        background-color: rgb(219, 127, 19);
+    }
+    100% {
+        transform: scale(1);
+        background-color: rgb(157, 142, 4);
+    }
+}
+
+.node-wall {
+    background-color: white;
+}
+
+
+.node-shortest-path {
+    animation-name: shortestPath;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0s;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+
+@keyframes shortestPath {
+    0% {
+        transform: scale(0.6);
+        background-color: rgb(216, 151, 234);
+    }
+    50% {
+        transform: scale(1.2);
+        background-color: rgb(151, 215, 234);
+    }
+    100% {
+        transform: scale(1);
+        background-color: rgb(166, 151, 234);
+    }
+}
+
+.instant-visited {
+    background-color: rgb(157, 142, 4);
+}
+.instant-shortest-path {
+    background-color: rgb(166, 151, 234);
+}
