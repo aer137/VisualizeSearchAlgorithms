@@ -9,6 +9,13 @@ export function dfs(grid, startNode, finishNode) {
         // pop stack
         const node = stack.pop();
         if (node.isWall) continue;
+        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
+        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
+
+        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
+        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
+
+        console.log(node);
         node.isVisited = true;
         visited.push(node);
         if (node === finishNode) {
@@ -22,6 +29,8 @@ export function dfs(grid, startNode, finishNode) {
             }
         }
     }
+    return visited;  // if we are trapped, return start node
+
 }
 
 function updateAndReturnUnvisitedNeighbors(node, grid) {

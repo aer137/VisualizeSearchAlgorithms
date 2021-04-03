@@ -6,6 +6,9 @@
 import Heapify from "heapify";
 
 export function aStar(grid, startNode, finishNode) {
+    console.log('a star *****************');
+    console.log(startNode);
+    console.log(finishNode);
     const frontier = {};
     const frontierOrder = [];
     const explored = [];

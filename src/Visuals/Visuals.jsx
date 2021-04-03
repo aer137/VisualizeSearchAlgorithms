@@ -24,6 +24,11 @@ let ALG_ON_BOARD = false;  // switches to true if we've run an algorithm
 let PREVIOUS_ALG = null; // will be a string specifying the algorithm we just completed, e.g. 'dijkstra' or 'astar'
 let MOVING_PATH = false; // switches to true when we click on the start or finish node when path is on board
 
+let PREV_ROW = 0;
+let PREV_COL = 0;
+let PREV_CLASS = '';
+
+
 export default class Visuals extends Component {
     constructor() {
         super();
@@ -54,8 +59,6 @@ export default class Visuals extends Component {
             // switch moving path to true to be used in handleMouseEnter - dealing w/click and drag when we haven't clicked start/finish nodes
             MOVING_PATH = true;
             // change every node in path to class 'node instant-path' 'and 'node instant-visited'
-            // potentially change node prop instant -> true
-            // set state
             this.setState({mouseIsPressed: true});
         }
         // for when there's no path on the board
@@ -69,16 +72,29 @@ export default class Visuals extends Component {
             else if (isStart === true || isFinish === true) {
                 TRANSITIONING = true;
                 START = !!isStart;
+
                 const newGrid = getNewGridWithNewStartFinish(this.state.grid, row, col);
                 this.setState({grid: newGrid, mouseIsPressed: true});
+
             }
         }
     }
 
     handleMouseEnter(row, col, isStart, isFinish, transitioning) {
+        // wall case - no generating path
+        // wall case - no generating path
+        if (this.state.grid[row][col].isWall) {
+            // do nothing
+        }
+        else if (this.state.grid[row][col].isFinish) {
+        }
+        else if (this.state.grid[row][col].isStart) {
+        }
         // moving start/finish nodes when there's a path on the board
-        if (ALG_ON_BOARD === true && MOVING_PATH === true) {
+        else if (ALG_ON_BOARD === true && MOVING_PATH === true) {
             // assign start node to this current node - change global vars too
+            PREV_ROW = START_NODE_ROW;
+            PREV_COL = START_NODE_COL;
             this.newInstantGrid(this.state.grid, row, col);
             this.setState({grid: this.state.grid});
 
@@ -112,6 +128,13 @@ export default class Visuals extends Component {
         else if (CAN_DRAW === true) {
             // moving start/finish position
             if (TRANSITIONING === true) {
+                // wall condition - change node to not wall
+                if (this.state.grid[row][col].isWall) {
+                    const newGrid = this.state.grid.slice();
+                    newGrid[row][col].isWall = false;
+                    this.setState({grid: newGrid});
+
+                }
                 const newGrid = changeStartFinish(this.state.grid, row, col); // change all nodes to not transitioning, change start/finish node
                 this.setState({grid: newGrid, mouseIsPressed: false});
             }
@@ -127,15 +150,22 @@ export default class Visuals extends Component {
         // if we're moving a path that's already on the board - no timeout/animation
         if (ALG_ON_BOARD === true) {
             console.log('alg on board')
-            unInstantGrid();
             for (let i = 1; i < visitedNodesInOrder.length - 1; i++) {
                 const node = visitedNodesInOrder[i];
-                console.log('CREATING NODES VISITED');
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node instant-visited';
+                this.state.grid[node.row][node.col].classs = 'instant-visited';
+
             }
             this.animateShortestPath(nodesInShortestPathOrder);
+
         } else {
             // animating a 'fresh' path from cleared board - with timeout/animation
+            // console.log('**********************************');
+            // console.log('**********************************');
+            // console.log('**********************************');
+
+            // console.log(visitedNodesInOrder);
+
             for (let i = 1; i <= visitedNodesInOrder.length - 1; i++) {
                 if (i === visitedNodesInOrder.length - 1) {
                     setTimeout(() => {
@@ -147,6 +177,7 @@ export default class Visuals extends Component {
                     const node = visitedNodesInOrder[i];
                     document.getElementById(`node-${node.row}-${node.col}`).className =
                         'node node-visited';
+                    this.state.grid[node.row][node.col].classs = 'node-visited';
                 }, 10 * i);
             }
         }
@@ -155,12 +186,15 @@ export default class Visuals extends Component {
     animateShortestPath(nodesInShortestPathOrder) {
         // if we're moving a path that's already on the board:
         if (ALG_ON_BOARD === true) {
-            console.log('alg on board')
             for (let i = 1; i < nodesInShortestPathOrder.length - 1; i++) {
                 const node = nodesInShortestPathOrder[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node instant-shortest-path';
+                this.state.grid[node.row][node.col].classs = 'instant-shortest-path';
+
             }
             ALG_DONE = true;
+            PREV_CLASS = document.getElementById(`node-${PREV_ROW}-${PREV_COL}`).className;
+
         }
         else {  //new path, w animation
             let timeout = 0;
@@ -170,6 +204,8 @@ export default class Visuals extends Component {
                     const node = nodesInShortestPathOrder[i];
                     document.getElementById(`node-${node.row}-${node.col}`).className =
                         'node node-shortest-path';
+                    this.state.grid[node.row][node.col].classs = 'node-shortest-path';
+
                 }, 50 * i);
             }
             setTimeout(() => {ALG_DONE = true; ALG_ON_BOARD = true;}, 50*(timeout) + 10);
@@ -182,7 +218,6 @@ export default class Visuals extends Component {
             CAN_DRAW = false;
             const {grid} = this.state;
             if (!ALG_ON_BOARD) {  //we'll save the state w/ wall config before animating a path, if we want to clear path but not walls
-                console.log('no alg on board, remembering history');
                 this.handleClick(grid);
             }
             const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -195,6 +230,19 @@ export default class Visuals extends Component {
                         ? dfs(grid, startNode, finishNode)
                         : bfs(grid, startNode, finishNode);
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+
+
+            // console.log('-----------------');
+            // console.log('-----------------');
+            // console.log('-----------------');
+            // console.log(nodesInShortestPathOrder);
+            // console.log(visitedNodesInOrder);
+            // if (nodesInShortestPathOrder.length > 0) {
+            //     this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+            //     PREVIOUS_ALG = alg;
+            // }
+
+
             this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
             PREVIOUS_ALG = alg;
         }
@@ -202,22 +250,29 @@ export default class Visuals extends Component {
 
     resetNodes() {
         // reset all nodes to simply 'node' to undo the animations, leaving only the walls
-        let nodesVisited = document.getElementsByClassName('node node-visited');
-        let nodesPath = document.getElementsByClassName('node node-shortest-path');
-        console.log('resetting nodes')
+        let nodesVisited = document.getElementsByClassName('node-visited');
+        let nodesPath = document.getElementsByClassName('node-shortest-path');
+        document.getElementsByClassName('node-start')[0].className = 'node';
+
+
         while (!!nodesVisited.length || !!nodesPath.length) {
             console.log(nodesVisited.length)
             let i = 0
             for (const node of nodesVisited) {
                 node.className = 'node';
+                // this.state.grid[node.row][node.col].classs = '';
+
                 console.log(i);
                 i = i+1;
             }
             for (let i = 0; i < nodesPath.length; i++) {
                 nodesPath[i].className = 'node';
+                // console.log()
+                // this.state.grid[nodesPath[i].row][nodesPath[i].col].classs = '';
+
             }
-            nodesVisited = document.getElementsByClassName('node node-visited');
-            nodesPath = document.getElementsByClassName('node node-shortest-path');
+            nodesVisited = document.getElementsByClassName('node-visited');
+            nodesPath = document.getElementsByClassName('node-shortest-path');
 
         }
         CAN_DRAW = true;
@@ -232,7 +287,6 @@ export default class Visuals extends Component {
         const nodes = getAllNodes(this.state.grid);
         for (const node of nodes) {
             if (node.isVisited) {
-                console.log('true');
                 node.isVisited = false;
             }
             node.previousNode = null;
@@ -242,6 +296,7 @@ export default class Visuals extends Component {
             node.status = null;
             node.isStart = node.row === START_NODE_ROW && node.col === START_NODE_COL;
             node.isFinish = node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL;
+            node.classs = '';
         }
     }
 
@@ -250,12 +305,11 @@ export default class Visuals extends Component {
         console.log(ALG_DONE);
         console.log('resetting path - alg done ^^')
         if (ALG_DONE === true) {
-            // clears any search algorithm, keeps walls
-            const gridBefore = this.state.gridHistory[this.state.gridHistory.length - 1].history;
-            unInstantGrid(); //////
-            this.resetNodes();
             this.unvisitNodes();
-            this.setState({grid: gridBefore});
+
+            unInstantGrid(this.state.grid); //////
+
+            this.resetNodes();
         }
         ALG_ON_BOARD = false;
     }
@@ -277,16 +331,22 @@ export default class Visuals extends Component {
             FINISH_NODE_ROW = row;
             FINISH_NODE_COL = col;
         }
-        unInstantGrid();
+        unInstantGrid(grid);
         this.resetPath();
-        // re-call alg, re-render page
         ALG_ON_BOARD = true;
         this.visualize(PREVIOUS_ALG);
     }
 
 
     render() {
+        console.log('render%%%%%%%%%%%%%%%%');
         const {grid, mouseIsPressed} = this.state;
+        // if (PREV_ROW > 0 && PREV_COL > 0) {
+        //     document.getElementById(`node-${PREV_ROW}-${PREV_COL}`).className = PREV_CLASS;
+        //     console.log(document.getElementById(`node-${PREV_ROW}-${PREV_COL}`).className);
+        //     console.log(this.state.grid[PREV_ROW][PREV_COL]);
+        // }
+        
         return (
             <>
                 <div className="title">
@@ -319,7 +379,7 @@ export default class Visuals extends Component {
                         return (
                             <div key={rowIdx}>
                                 {row.map((node, nodeIdx) => {
-                                    const {row, col, isFinish, isStart, isWall, transitioning} = node;
+                                    const {row, col, isFinish, isStart, isWall, transitioning, classs} = node;
                                     return (
                                         <Node
                                             key={nodeIdx}
@@ -329,6 +389,7 @@ export default class Visuals extends Component {
                                             isWall={isWall}
                                             mouseIsPressed={mouseIsPressed}
                                             transitioning={transitioning}
+                                            classs={classs}
                                             onMouseDown={(row, col) => this.handleMouseDown(row, col, isStart, isFinish)}
                                             onMouseEnter={(row, col) =>
                                                 this.handleMouseEnter(row, col, isStart, isFinish, transitioning)
@@ -370,6 +431,7 @@ const createNode = (col, row) => {
         isWall: false,
         previousNode: null,
         transitioning: false,
+        classs: '',
     };
 };
 const getNewGridWithWallToggled = (grid, row, col) => {
@@ -394,6 +456,7 @@ const getNewGridWithNewStartFinish = (grid, row, col) => {
             ...node,
             transitioning: true,
             isStart: false,
+            classs: '',
         };
     }
     else {
@@ -401,25 +464,44 @@ const getNewGridWithNewStartFinish = (grid, row, col) => {
             ...node,
             transitioning: true,
             isFinish: false,
+            classs: '',
         };
     }
     newGrid[row][col] = newNode;
     return newGrid;
 };
 
-const unInstantGrid = () => {
+
+
+const unInstantGrid = (grid) => {
     //toggles all nodes back to their original class names before we moved the start or finish
     let nodesVisited = document.getElementsByClassName('node instant-visited');
     let nodesPath = document.getElementsByClassName('node instant-shortest-path');
+
+    for (const row of grid) {
+        console.log(row);
+        for (const node of row) {
+            // console.log(col);
+            if (node.classs == 'instant-visited' || node.classs == 'instant-shortest-path') {
+                node.classs = '';
+            }
+        }
+    }
     while (!!nodesVisited.length || !!nodesPath.length) {
         for (const node of nodesVisited) {
             node.className = 'node';
+            // grid[node.row][node.col].classs = '';
+
         }
         for (const node of nodesPath) {
             node.className = 'node';
+            // grid[node.row][node.col].classs = '';
+
         }
-        nodesVisited = document.getElementsByClassName('node node-visited');
-        nodesPath = document.getElementsByClassName('node node-shortest-path');
+        console.log('NODES VISITED LEFT');
+        console.log(nodesVisited.length);
+        console.log(nodesPath.length);
+
     }
 }
 
@@ -434,7 +516,6 @@ const changeStartFinish = (grid, row, col, transitioning=true) => {
             }
         }
     }
-
     if (START) {
         START_NODE_ROW = row;
         START_NODE_COL = col;
@@ -446,11 +527,13 @@ const changeStartFinish = (grid, row, col, transitioning=true) => {
     const newStart = {
         ...nodeStart,
         isStart: true,
+        // classs: 'node-start',
     };
     const nodeFinish = newGrid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const newFinish = {
         ...nodeFinish,
         isFinish: true,
+        // classs: 'node-finish',
     };
 
     newGrid[START_NODE_ROW][START_NODE_COL] = newStart;

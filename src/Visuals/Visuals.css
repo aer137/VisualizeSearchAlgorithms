@@ -15,14 +15,18 @@ body {
     align-items: center;
     justify-content: center;
     perspective: 1000px;
-    background: linear-gradient(
+    background: rgb(255, 255, 255);
+    /* linear-gradient(
             to right,
-            #090909,
+            black,
+            grey,
+            black
+            /* #090909,
             #484748,
             #675967,
-            #9f72a7,
-            #da9eea
-    );
+            #9b79a1,
+            #cdabd6 */
+    /* );  */
 }
 
 .title {

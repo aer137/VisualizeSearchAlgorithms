@@ -21,7 +21,9 @@ export function bfs(grid, startNode, finishNode) {
             neighbor.isVisited = true;
         }
     }
+    return visitedNodesInOrder;  // if we are trapped, return start node
 }
+
 
 
 function updateAndReturnUnvisitedNeighbors(node, grid) {

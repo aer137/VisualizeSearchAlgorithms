@@ -65,12 +65,15 @@ export function getNodesInShortestPathOrder(finishNode) {
     const nodesInShortestPathOrder = [];
     let currentNode = finishNode;
     console.log('nodes in shortest path order');
-    console.log(currentNode);
+    // console.log(currentNode);
     while (currentNode !== null) {
+        console.log(currentNode);
+        console.log(document.getElementById(`node-${currentNode.row}-${currentNode.col}`).className);
         console.log('in while');
         nodesInShortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
     console.log('out while');
+    console.log(nodesInShortestPathOrder);
     return nodesInShortestPathOrder;
 }

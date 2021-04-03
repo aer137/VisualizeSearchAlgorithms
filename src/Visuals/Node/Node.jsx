@@ -13,6 +13,7 @@ export default class Node extends Component {
             onMouseUp,
             row,
             transitioning,
+            classs,
         } = this.props;
         const trans = (transitioning === true)
             ? 'trans'
@@ -24,7 +25,7 @@ export default class Node extends Component {
                 ? 'node-start'
                 : isWall
                     ? 'node-wall'
-                    : '';
+                    : classs;
         return (
             <div
                 id={`node-${row}-${col}`}
