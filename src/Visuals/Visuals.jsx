@@ -312,7 +312,9 @@ export default class Visuals extends Component {
                     <h1>PATHS</h1>
                 </div>
                 <div>
-                    <h3>Click and drag to create barriers, or to move the start/finish nodes</h3>
+                    <p>Click and drag to create barriers.</p>
+                    <p>Move the start/finish nodes!</p>
+                    <p>Refresh after resizing screen.</p>
                     <h2>* :) *</h2>
                 </div>
                 <div className="algo">
