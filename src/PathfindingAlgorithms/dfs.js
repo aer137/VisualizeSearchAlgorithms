@@ -9,13 +9,6 @@ export function dfs(grid, startNode, finishNode) {
         // pop stack
         const node = stack.pop();
         if (node.isWall) continue;
-        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
-        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
-
-        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
-        console.log('dfsdfsdfsdfsdfsdf $$$$$$$$$$');
-
-        console.log(node);
         node.isVisited = true;
         visited.push(node);
         if (node === finishNode) {
@@ -66,13 +59,9 @@ export function getAllNodes(grid) {
 export function getNodesInShortestPathOrder(finishNode) {
     const nodesInShortestPathOrder = [];
     let currentNode = finishNode;
-    console.log('nodes in shortest path order');
-    console.log(currentNode);
     while (currentNode !== null) {
-        console.log('in while');
         nodesInShortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
-    console.log('out while');
     return nodesInShortestPathOrder;
 }

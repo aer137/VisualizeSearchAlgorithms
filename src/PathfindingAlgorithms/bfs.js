@@ -11,8 +11,6 @@ export function bfs(grid, startNode, finishNode) {
         closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === finishNode) {
-            console.log('done!');
-            console.log(visitedNodesInOrder);
             return visitedNodesInOrder;
         }
         const neighbors = updateAndReturnUnvisitedNeighbors(closestNode, grid);
@@ -59,13 +57,9 @@ export function getAllNodes(grid) {
 export function getNodesInShortestPathOrder(finishNode) {
     const nodesInShortestPathOrder = [];
     let currentNode = finishNode;
-    console.log('nodes in shortest path order');
-    console.log(currentNode);
     while (currentNode !== null) {
-        console.log('in while');
         nodesInShortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
-    console.log('out while');
     return nodesInShortestPathOrder;
 }

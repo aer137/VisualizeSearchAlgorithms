@@ -8,12 +8,16 @@ import {bfs} from '../PathfindingAlgorithms/bfs';
 
 import './Visuals.css';
 
-let START_NODE_ROW = 6;
-let START_NODE_COL = 8;
-let FINISH_NODE_ROW = 6;
-let FINISH_NODE_COL = 37;
-const BOARD_HEIGHT = 15;
-const BOARD_WIDTH = 45;
+let START_NODE_ROW = 2;
+let START_NODE_COL = 2;
+let FINISH_NODE_ROW = 5;
+let FINISH_NODE_COL = 5;
+
+let BOARD_HEIGHT = 10;
+let BOARD_WIDTH = 45;
+
+
+
 /// for before an algorithm has run:
 let CAN_DRAW = true;
 let ALG_DONE = true;
@@ -23,10 +27,6 @@ let START = false; // bool specifying whether node is start or finish, if we're 
 let ALG_ON_BOARD = false;  // switches to true if we've run an algorithm
 let PREVIOUS_ALG = null; // will be a string specifying the algorithm we just completed, e.g. 'dijkstra' or 'astar'
 let MOVING_PATH = false; // switches to true when we click on the start or finish node when path is on board
-
-let PREV_ROW = 0;
-let PREV_COL = 0;
-let PREV_CLASS = '';
 
 
 export default class Visuals extends Component {
@@ -72,7 +72,6 @@ export default class Visuals extends Component {
             else if (isStart === true || isFinish === true) {
                 TRANSITIONING = true;
                 START = !!isStart;
-
                 const newGrid = getNewGridWithNewStartFinish(this.state.grid, row, col);
                 this.setState({grid: newGrid, mouseIsPressed: true});
 
@@ -84,7 +83,6 @@ export default class Visuals extends Component {
         // wall case - no generating path
         // wall case - no generating path
         if (this.state.grid[row][col].isWall) {
-            // do nothing
         }
         else if (this.state.grid[row][col].isFinish) {
         }
@@ -92,12 +90,10 @@ export default class Visuals extends Component {
         }
         // moving start/finish nodes when there's a path on the board
         else if (ALG_ON_BOARD === true && MOVING_PATH === true) {
+
             // assign start node to this current node - change global vars too
-            PREV_ROW = START_NODE_ROW;
-            PREV_COL = START_NODE_COL;
             this.newInstantGrid(this.state.grid, row, col);
             this.setState({grid: this.state.grid});
-
         }
         // for when there's no path on the board
         else if (CAN_DRAW === true) {
@@ -106,6 +102,7 @@ export default class Visuals extends Component {
                 if (!this.state.mouseIsPressed) return;
                 const newGrid = getNewGridWithNewStartFinish(this.state.grid, row, col);
                 this.setState({grid: newGrid});
+
             }
             //drawing a wall
             else if (isStart === false && isFinish === false) {
@@ -153,19 +150,13 @@ export default class Visuals extends Component {
             for (let i = 1; i < visitedNodesInOrder.length - 1; i++) {
                 const node = visitedNodesInOrder[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node instant-visited';
-                this.state.grid[node.row][node.col].classs = 'instant-visited';
-
+                const newGrid = this.state.grid.slice();
+                newGrid[node.row][node.col].classs = 'instant-visited';
+                this.setState({grid: newGrid});
             }
             this.animateShortestPath(nodesInShortestPathOrder);
 
         } else {
-            // animating a 'fresh' path from cleared board - with timeout/animation
-            // console.log('**********************************');
-            // console.log('**********************************');
-            // console.log('**********************************');
-
-            // console.log(visitedNodesInOrder);
-
             for (let i = 1; i <= visitedNodesInOrder.length - 1; i++) {
                 if (i === visitedNodesInOrder.length - 1) {
                     setTimeout(() => {
@@ -177,7 +168,9 @@ export default class Visuals extends Component {
                     const node = visitedNodesInOrder[i];
                     document.getElementById(`node-${node.row}-${node.col}`).className =
                         'node node-visited';
-                    this.state.grid[node.row][node.col].classs = 'node-visited';
+                    const newGrid = this.state.grid.slice();
+                    newGrid[node.row][node.col].classs = 'node-visited';
+                    this.setState({grid: newGrid});
                 }, 10 * i);
             }
         }
@@ -189,12 +182,11 @@ export default class Visuals extends Component {
             for (let i = 1; i < nodesInShortestPathOrder.length - 1; i++) {
                 const node = nodesInShortestPathOrder[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node instant-shortest-path';
-                this.state.grid[node.row][node.col].classs = 'instant-shortest-path';
-
+                const newGrid = this.state.grid.slice();
+                newGrid[node.row][node.col].classs = 'instant-shortest-path';
+                this.setState({grid: newGrid});
             }
             ALG_DONE = true;
-            PREV_CLASS = document.getElementById(`node-${PREV_ROW}-${PREV_COL}`).className;
-
         }
         else {  //new path, w animation
             let timeout = 0;
@@ -204,8 +196,10 @@ export default class Visuals extends Component {
                     const node = nodesInShortestPathOrder[i];
                     document.getElementById(`node-${node.row}-${node.col}`).className =
                         'node node-shortest-path';
-                    this.state.grid[node.row][node.col].classs = 'node-shortest-path';
 
+                    const newGrid = this.state.grid.slice();
+                    newGrid[node.row][node.col].classs = 'node-shortest-path';
+                    this.setState({grid: newGrid});
                 }, 50 * i);
             }
             setTimeout(() => {ALG_DONE = true; ALG_ON_BOARD = true;}, 50*(timeout) + 10);
@@ -230,19 +224,6 @@ export default class Visuals extends Component {
                         ? dfs(grid, startNode, finishNode)
                         : bfs(grid, startNode, finishNode);
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-
-
-            // console.log('-----------------');
-            // console.log('-----------------');
-            // console.log('-----------------');
-            // console.log(nodesInShortestPathOrder);
-            // console.log(visitedNodesInOrder);
-            // if (nodesInShortestPathOrder.length > 0) {
-            //     this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
-            //     PREVIOUS_ALG = alg;
-            // }
-
-
             this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
             PREVIOUS_ALG = alg;
         }
@@ -254,22 +235,12 @@ export default class Visuals extends Component {
         let nodesPath = document.getElementsByClassName('node-shortest-path');
         document.getElementsByClassName('node-start')[0].className = 'node';
 
-
         while (!!nodesVisited.length || !!nodesPath.length) {
-            console.log(nodesVisited.length)
-            let i = 0
             for (const node of nodesVisited) {
                 node.className = 'node';
-                // this.state.grid[node.row][node.col].classs = '';
-
-                console.log(i);
-                i = i+1;
             }
             for (let i = 0; i < nodesPath.length; i++) {
                 nodesPath[i].className = 'node';
-                // console.log()
-                // this.state.grid[nodesPath[i].row][nodesPath[i].col].classs = '';
-
             }
             nodesVisited = document.getElementsByClassName('node-visited');
             nodesPath = document.getElementsByClassName('node-shortest-path');
@@ -300,15 +271,10 @@ export default class Visuals extends Component {
         }
     }
 
-
     resetPath() {
-        console.log(ALG_DONE);
-        console.log('resetting path - alg done ^^')
         if (ALG_DONE === true) {
             this.unvisitNodes();
-
-            unInstantGrid(this.state.grid); //////
-
+            unInstantGrid(this.state.grid);
             this.resetNodes();
         }
         ALG_ON_BOARD = false;
@@ -339,14 +305,7 @@ export default class Visuals extends Component {
 
 
     render() {
-        console.log('render%%%%%%%%%%%%%%%%');
         const {grid, mouseIsPressed} = this.state;
-        // if (PREV_ROW > 0 && PREV_COL > 0) {
-        //     document.getElementById(`node-${PREV_ROW}-${PREV_COL}`).className = PREV_CLASS;
-        //     console.log(document.getElementById(`node-${PREV_ROW}-${PREV_COL}`).className);
-        //     console.log(this.state.grid[PREV_ROW][PREV_COL]);
-        // }
-        
         return (
             <>
                 <div className="title">
@@ -401,12 +360,16 @@ export default class Visuals extends Component {
                             </div>
                         );
                     })}
-                </div>
+                </div>    
             </>
         );
     }
 }
 const getInitialGrid = () => {
+    let w = window.innerWidth/30;
+    BOARD_WIDTH = Math.floor(w);
+    FINISH_NODE_COL = BOARD_WIDTH - 4;
+
     const grid = [];
     for (let row = 0; row < BOARD_HEIGHT; row++) {
         const currentRow = [];
@@ -446,8 +409,6 @@ const getNewGridWithWallToggled = (grid, row, col) => {
 };
 
 const getNewGridWithNewStartFinish = (grid, row, col) => {
-    // function for moving start/finish node
-    // 'start' is a boolean - if true, is start; if false, is finish.
     const newGrid = grid.slice();
     const node = newGrid[row][col];
     let newNode;
@@ -472,17 +433,14 @@ const getNewGridWithNewStartFinish = (grid, row, col) => {
 };
 
 
-
 const unInstantGrid = (grid) => {
     //toggles all nodes back to their original class names before we moved the start or finish
     let nodesVisited = document.getElementsByClassName('node instant-visited');
     let nodesPath = document.getElementsByClassName('node instant-shortest-path');
 
     for (const row of grid) {
-        console.log(row);
         for (const node of row) {
-            // console.log(col);
-            if (node.classs == 'instant-visited' || node.classs == 'instant-shortest-path') {
+            if (node.classs === 'instant-visited' || node.classs === 'instant-shortest-path') {
                 node.classs = '';
             }
         }
@@ -490,18 +448,10 @@ const unInstantGrid = (grid) => {
     while (!!nodesVisited.length || !!nodesPath.length) {
         for (const node of nodesVisited) {
             node.className = 'node';
-            // grid[node.row][node.col].classs = '';
-
         }
         for (const node of nodesPath) {
             node.className = 'node';
-            // grid[node.row][node.col].classs = '';
-
         }
-        console.log('NODES VISITED LEFT');
-        console.log(nodesVisited.length);
-        console.log(nodesPath.length);
-
     }
 }
 
@@ -527,13 +477,11 @@ const changeStartFinish = (grid, row, col, transitioning=true) => {
     const newStart = {
         ...nodeStart,
         isStart: true,
-        // classs: 'node-start',
     };
     const nodeFinish = newGrid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const newFinish = {
         ...nodeFinish,
         isFinish: true,
-        // classs: 'node-finish',
     };
 
     newGrid[START_NODE_ROW][START_NODE_COL] = newStart;

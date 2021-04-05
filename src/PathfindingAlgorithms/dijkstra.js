@@ -18,8 +18,6 @@ export function dijkstra(grid, startNode, finishNode) {
         closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === finishNode) {
-            console.log('done!');
-            console.log(visitedNodesInOrder);
             return visitedNodesInOrder;
         }
         updateUnvisitedNeighbors(closestNode, grid);
@@ -64,16 +62,10 @@ export function getAllNodes(grid) {
 export function getNodesInShortestPathOrder(finishNode) {
     const nodesInShortestPathOrder = [];
     let currentNode = finishNode;
-    console.log('nodes in shortest path order');
     // console.log(currentNode);
     while (currentNode !== null) {
-        console.log(currentNode);
-        console.log(document.getElementById(`node-${currentNode.row}-${currentNode.col}`).className);
-        console.log('in while');
         nodesInShortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
-    console.log('out while');
-    console.log(nodesInShortestPathOrder);
     return nodesInShortestPathOrder;
 }

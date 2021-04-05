@@ -65,15 +65,15 @@ export function getAllNodes(grid) {
     return nodes;
 }
 
-function resetNode(node) {
-    const newNode = {
-        ...node,
-        distance: node.isStart ? 0 : Infinity,
-        isVisited: false,
-        transitioning: false,
-    };
-    return newNode
-}
+// function resetNode(node) {
+//     const newNode = {
+//         ...node,
+//         distance: node.isStart ? 0 : Infinity,
+//         isVisited: false,
+//         transitioning: false,
+//     };
+//     return newNode
+// }
 
 // Backtracks from the finish node to find the shortest path
 export function getNodesInShortestPathOrder(finishNode) {

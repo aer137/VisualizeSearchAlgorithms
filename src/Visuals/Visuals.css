@@ -1,19 +1,22 @@
 .grid {
     margin: 100px 0 0;
+    /* display:table; */
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* overflow-x: scroll; */
+
 }
 
 body {
     font-family: "Lucida Console", "Courier New", monospace;
     min-height: 100vh;
-    display: flex;
+    /* display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
     perspective: 1000px;
     background: rgb(255, 255, 255);
     /* linear-gradient(
@@ -50,12 +53,12 @@ body {
         text-shadow: 0 1px 1px white;
     }
 }
-.container {
+/* .container {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */
 .card {
     transform-style: preserve-3d;
     min-height: 60vh;
