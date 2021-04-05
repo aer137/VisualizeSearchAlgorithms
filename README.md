@@ -1,6 +1,6 @@
 # Pathfinding Algorithm Visualizer
 
-[Here](https://main.d3lj2fe86u27h5.amplifyapp.com/) you can play with this project!
+[Here](https://main.d3aey1ic59dkrj.amplifyapp.com/) you can play with this project!
   
   
   
