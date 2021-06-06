@@ -5,8 +5,10 @@ import {dijkstra, getAllNodes, getNodesInShortestPathOrder} from '../Pathfinding
 import {aStar} from '../PathfindingAlgorithms/aStar_tester';
 import {dfs} from '../PathfindingAlgorithms/dfs';
 import {bfs} from '../PathfindingAlgorithms/bfs';
-
 import './Visuals.css';
+
+
+
 
 let START_NODE_ROW = 2;
 let START_NODE_COL = 2;
@@ -30,18 +32,25 @@ let MOVING_PATH = false; // switches to true when we click on the start or finis
 
 
 export default class Visuals extends Component {
+
     constructor() {
         super();
         this.state = {
             grid: [],
+            height: window.innerHeight,
+            width: window.innerWidth,
             mouseIsPressed: false,
             gridHistory: [{
                 history: []
             }],
         };
+        this.updateDimensions = this.updateDimensions.bind(this);
     }
 
+
     componentDidMount() {
+        console.log(this.state.height);
+        window.addEventListener("resize", this.updateDimensions);
         const grid = getInitialGrid();
         this.setState({
             grid: grid,
@@ -50,6 +59,16 @@ export default class Visuals extends Component {
             }])
         });
     }
+
+    updateDimensions() {
+        this.setState({
+            height: window.innerHeight,
+            width: window.innerWidth
+        });
+    }
+
+
+
 
     handleMouseDown(row, col, isStart, isFinish) {
         // moving start/finish nodes when there's a path on the board
@@ -307,14 +326,13 @@ export default class Visuals extends Component {
     render() {
         const {grid, mouseIsPressed} = this.state;
         return (
-            <>
+            <>                
                 <div className="title">
                     <h1>PATHS</h1>
                 </div>
                 <div>
                     <p>Click and drag to create barriers.</p>
                     <p>Move the start/finish nodes!</p>
-                    <p>Refresh after resizing screen.</p>
                     <h2>* :) *</h2>
                 </div>
                 <div className="algo">
@@ -362,9 +380,12 @@ export default class Visuals extends Component {
                             </div>
                         );
                     })}
-                </div>    
+                </div>  
             </>
         );
+    }
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateDimensions);
     }
 }
 const getInitialGrid = () => {
